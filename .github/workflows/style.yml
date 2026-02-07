@@ -23,26 +23,18 @@ jobs:
       run: |
         sudo apt-get install -y shellcheck
 
+    - name: Run ShellCheck
+      run: |
+        find . -name "*.sh" -type f | while read f; do
+          shellcheck "$f" || exit 1
+        done
+
     - name: Install Python Checkers
       run: |
         pip install ruff
         pip install black
         pip install pylint
         pip install pyright
-
-    - name: Install Markdown Checkers
-      run: |
-        npm install -g markdownlint-cli
-
-    - name: Install Typst
-      run: |
-        sudo snap install typst
-
-    - name: Run ShellCheck
-      run: |
-        find . -name "*.sh" -type f | while read f; do
-          shellcheck "$f" || exit 1
-        done
 
     - name: Compile Python
       run: |
@@ -69,11 +61,19 @@ jobs:
       run: |
         pyright .
 
+    - name: Install Markdown Checkers
+      run: |
+        npm install -g markdownlint-cli
+
     - name: Run Markdown Lint
       run: |
         find . -name "*.md" -type f | while read f; do
           markdownlint "$f" || exit 1
         done
+
+    - name: Install Typst
+      run: |
+        sudo snap install typst
 
     - name: Compile Typst
       run: |
