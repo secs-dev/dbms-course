@@ -35,9 +35,8 @@ jobs:
         npm install -g markdownlint-cli
 
     - name: Install Typst
-      uses: typst/setup-typst@v1
-      with:
-        version: latest
+      run: |
+        sudo snap install typst
 
     - name: Run ShellCheck
       run: |
