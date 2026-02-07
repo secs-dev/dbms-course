@@ -56,10 +56,10 @@ jobs:
 
     - name: Run Pylint
       run: |
-        pylint . --disable=\
-          missing-module-docstring,\
-          missing-function-docstring,\
-          missing-class-docstring
+        $VT_PYLINT_DISABLE="missing-module-docstring"
+        $VT_PYLINT_DISABLE="missing-function-docstring,$VT_PYLINT_DISABLE"
+        $VT_PYLINT_DISABLE="missing-class-docstring,$VT_PYLINT_DISABLE"
+        pylint . --disable="$VT_PYLINT_DISABLE"
 
     - name: Run Black
       run: |
