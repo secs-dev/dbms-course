@@ -36,6 +36,16 @@ jobs:
         pip install pylint
         pip install pyright
 
+    - name: Install SQLFluff
+      run: |
+        pip install sqlfluff
+
+    - name: Run SQLFluff
+      run: |
+        find . -name "*.sql" -type f | while read f; do
+          sqlfluff lint "$f" --dialect postgres
+        done
+
     - name: Compile Python
       run: |
         find . -name "*.py" -type f | while read f; do
