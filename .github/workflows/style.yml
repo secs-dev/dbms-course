@@ -1,0 +1,83 @@
+name: Code Styling
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  style-check:
+    name: Style
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Prepare Package Managers
+      run: |
+        sudo apt-get update
+        python -m pip install --upgrade pip
+
+    - name: Install Shell Checkers
+      run: |
+        sudo apt-get install -y shellcheck
+
+    - name: Install Python Checkers
+      run: |
+        pip install ruff
+        pip install black
+        pip install pylint
+        pip install pyright
+
+    - name: Install Markdown Checkers
+      run: |
+        npm install -g markdownlint-cli
+
+    - name: Install Typst
+      uses: typst/setup-typst@v1
+      with:
+        version: latest
+
+    - name: Run ShellCheck
+      run: |
+        find . -name "*.sh" -type f | while read f; do
+          shellcheck "$f" || exit 1
+        done
+
+    - name: Compile Python
+      run: |
+        find . -name "*.py" -type f | while read f; do
+          python -m py_compile "$f" || exit 1
+        done
+
+    - name: Run Ruff
+      run: |
+        ruff check .
+
+    - name: Run Pylint
+      run: |
+        pylint . --disable=\
+          missing-module-docstring,\
+          missing-function-docstring,\
+          missing-class-docstring
+
+    - name: Run Black
+      run: |
+        black --check .
+
+    - name: Run Pyright
+      run: |
+        pyright .
+
+    - name: Run Markdown Lint
+      run: |
+        find . -name "*.md" -type f | while read f; do
+          markdownlint "$f" || exit 1
+        done
+
+    - name: Compile Typst
+      run: |
+        find . -name "*.typ" -type f | while read f; do
+          typst compile "$f" --format pdf
+        done
