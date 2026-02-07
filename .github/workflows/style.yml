@@ -77,6 +77,8 @@ jobs:
 
     - name: Compile Typst
       run: |
-        find . -name "*.typ" -type f | while read f; do
-          typst compile "$f" --format pdf
+        find . -name "report" -type d | while read r; do
+          if find "$r" -name "*.typ" -type f | grep -q .; then
+            (cd "$r" && typst compile main.typ)
+          fi
         done
